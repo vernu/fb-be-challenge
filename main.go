@@ -1,8 +1,23 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"be-assignment-fireb/dbclient"
+	"log"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+)
 
 func main() {
+
+	godotenv.Load()
+
+	err := dbclient.Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Connected to MongoDB")
+
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
