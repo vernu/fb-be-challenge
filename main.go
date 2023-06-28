@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -23,21 +24,8 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/fetch", func(c *gin.Context) {
-		data, err := utils.GetExchangeRates()
-		err = utils.StoreExchangeRates(data, err)
-		if err != nil {
-			c.JSON(500, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
+	initializeCronJob()
 
-		c.JSON(200, gin.H{
-			"message": "data saved successfully",
-			"data":    data,
-		})
-	})
 	router.GET("/rates/:cryptocurrency/:fiat", handlers.GetExchangeRate)
 	router.GET("/rates/:cryptocurrency", handlers.GetAllExchangeRatesForACrypto)
 	router.GET("/rates", handlers.GetAllExchangeRates)
@@ -45,4 +33,26 @@ func main() {
 	router.GET("/balance/:address", handlers.GetEthBalance)
 
 	router.Run(":8080")
+}
+
+func initializeCronJob() {
+	c := cron.New()
+
+	c.AddFunc("*/5 * * * *", func() {
+		log.Println("Cron Job Running")
+
+		data, err := utils.GetExchangeRates()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		err = utils.StoreExchangeRates(data, err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	})
+
+	c.Start()
 }
