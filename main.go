@@ -3,6 +3,7 @@ package main
 import (
 	"be-assignment-fireb/dbclient"
 	"log"
+	"os"
 
 	"be-assignment-fireb/handlers"
 	"be-assignment-fireb/utils"
@@ -32,7 +33,7 @@ func main() {
 	router.GET("/rates/history/:cryptocurrency/:fiat", handlers.GetExchangeRateHistory)
 	router.GET("/balance/:address", handlers.GetEthBalance)
 
-	router.Run(":8080")
+	router.Run(":" + os.Getenv("PORT"))
 }
 
 func initializeCronJob() {
