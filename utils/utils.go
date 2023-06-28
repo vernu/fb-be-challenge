@@ -6,10 +6,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"net/http"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/params"
 )
 
 func GetExchangeRates() (map[string]map[string]float64, error) {
@@ -57,4 +63,27 @@ func StoreExchangeRates(data map[string]map[string]float64, err error) error {
 	}
 
 	return nil
+}
+
+func GetEthBalance(address string) (*big.Float, error) {
+
+	client, err := ethclient.Dial("https://mainnet.infura.io/v3/" + os.Getenv("INFURA_KEY"))
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+
+	if !common.IsHexAddress(address) {
+		return nil, fmt.Errorf("invalid ethereum address")
+	}
+
+	balance, err := client.BalanceAt(context.Background(), common.HexToAddress(address), nil)
+	if err != nil {
+		panic(err)
+	}
+
+	balanceInEther := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(params.Ether))
+
+	return balanceInEther, nil
+
 }

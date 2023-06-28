@@ -23,7 +23,7 @@ func GetExchangeRate(c *gin.Context) {
 
 	var exchangeRate models.ExchangeRate
 	if err := collection.FindOne(context.Background(), filter).Decode(&exchangeRate); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(400, gin.H{
 			"error": "failed to get exchange rate",
 		})
 		return
@@ -47,7 +47,7 @@ func GetAllExchangeRatesForACrypto(c *gin.Context) {
 
 	cursor, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(400, gin.H{
 			"error": "failed to get exchange rates",
 		})
 		return
@@ -55,7 +55,7 @@ func GetAllExchangeRatesForACrypto(c *gin.Context) {
 
 	var exchangeRates []models.ExchangeRate
 	if err := cursor.All(context.Background(), &exchangeRates); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(400, gin.H{
 			"error": "failed to get exchange rates ",
 		})
 		return
@@ -78,7 +78,7 @@ func GetAllExchangeRates(c *gin.Context) {
 
 	cursor, err := collection.Find(context.Background(), bson.M{})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(400, gin.H{
 			"error": "failed to get exchange rates",
 		})
 		return
@@ -87,7 +87,7 @@ func GetAllExchangeRates(c *gin.Context) {
 
 	var exchangeRates []models.ExchangeRate
 	if err := cursor.All(context.Background(), &exchangeRates); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(400, gin.H{
 			"error": "failed to get exchange rates",
 		})
 		return

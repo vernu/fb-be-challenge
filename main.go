@@ -42,6 +42,7 @@ func main() {
 	router.GET("/rates/:cryptocurrency", handlers.GetAllExchangeRatesForACrypto)
 	router.GET("/rates", handlers.GetAllExchangeRates)
 	// router.GET("/rates/history/:cryptocurrency/:fiat", handlers.GetExchangeRateHistory)
+	router.GET("/balance/:address", handlers.GetEthBalance)
 
 	router.Run(":8080")
 }
