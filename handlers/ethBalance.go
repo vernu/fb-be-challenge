@@ -18,7 +18,6 @@ func GetEthBalance(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"address": address,
 		"balance": balance,
 	})
 }
