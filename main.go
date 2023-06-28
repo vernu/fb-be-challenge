@@ -4,6 +4,7 @@ import (
 	"be-assignment-fireb/dbclient"
 	"log"
 
+	"be-assignment-fireb/handlers"
 	"be-assignment-fireb/utils"
 
 	"github.com/gin-gonic/gin"
@@ -37,5 +38,10 @@ func main() {
 			"data":    data,
 		})
 	})
+	router.GET("/rates/:cryptocurrency/:fiat", handlers.GetExchangeRate)
+	router.GET("/rates/:cryptocurrency", handlers.GetAllExchangeRatesForACrypto)
+	router.GET("/rates", handlers.GetAllExchangeRates)
+	// router.GET("/rates/history/:cryptocurrency/:fiat", handlers.GetExchangeRateHistory)
+
 	router.Run(":8080")
 }
